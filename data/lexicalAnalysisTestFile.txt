@@ -1,0 +1,3 @@
+while(num != 100){num++;}
+do{id--;}while(id != 30)
+int a = 50;
