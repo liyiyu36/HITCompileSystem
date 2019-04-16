@@ -6,10 +6,7 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.IdentityHashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Iterator;
+import lexicalAnalysis.Token;
 
 
 public class LexicalAnalysis {
@@ -35,7 +32,7 @@ public class LexicalAnalysis {
 	//符号表
 	private static final ArrayList<String> symbolTable = new ArrayList<String>();
 	//token序列
-	private static final IdentityHashMap<String, String> tokenSeq = new IdentityHashMap<String, String>();
+	private static final ArrayList<Token> tokenSeq = new ArrayList<Token>();
 	
 	/**
 	 * 在指定的文件路径读取代码文件的内容
@@ -118,10 +115,10 @@ public class LexicalAnalysis {
 			currentChar = getNextChar();
 		}
 		if (isKeyWord(currentWord)) {
-			tokenSeq.put(new String(KeyWords.get(currentWord)), null);
+			tokenSeq.add(new Token(KeyWords.get(currentWord), null));
 		}
 		else {
-			tokenSeq.put("ID", currentWord);
+			tokenSeq.add(new Token("ID", currentWord));
 			if (symbolTable.contains(currentWord)) {
 				currentWord = "";
 				return;
@@ -159,7 +156,7 @@ public class LexicalAnalysis {
 						currentWord = currentWord + String.valueOf(currentChar);
 						currentChar = getNextChar();
 					}
-					tokenSeq.put(new String("CONST"), currentWord);
+					tokenSeq.add(new Token("CONST", currentWord));
 					currentWord = "";
 					return;
 				}
@@ -176,7 +173,7 @@ public class LexicalAnalysis {
 					currentWord = currentWord + String.valueOf(currentChar);
 					currentChar = getNextChar();
 				}
-				tokenSeq.put(new String("CONST"), currentWord);
+				tokenSeq.add(new Token("CONST", currentWord));
 				currentWord = "";
 				return;
 			}
@@ -209,7 +206,7 @@ public class LexicalAnalysis {
 								currentWord = currentWord + String.valueOf(currentChar);
 								currentChar = getNextChar();
 							}
-							tokenSeq.put(new String("CONST"), currentWord);
+							tokenSeq.add(new Token("CONST", currentWord));
 							currentWord = "";
 							return;
 						}
@@ -226,7 +223,7 @@ public class LexicalAnalysis {
 							currentWord = currentWord + String.valueOf(currentChar);
 							currentChar = getNextChar();
 						}
-						tokenSeq.put(new String("CONST"), currentWord);
+						tokenSeq.add(new Token("CONST", currentWord));
 						currentWord = "";
 						return;
 					}
@@ -237,7 +234,7 @@ public class LexicalAnalysis {
 					}
 				}
 				else {
-					tokenSeq.put(new String("CONST"), currentWord);
+					tokenSeq.add(new Token("CONST", currentWord));
 					currentWord = "";
 					return;
 				}
@@ -249,7 +246,7 @@ public class LexicalAnalysis {
 			}
 		}
 		else {
-			tokenSeq.put(new String("CONST"), currentWord);
+			tokenSeq.add(new Token("CONST", currentWord));
 			currentWord = "";
 			return;
 		}
@@ -263,12 +260,12 @@ public class LexicalAnalysis {
 		currentWord = currentWord + String.valueOf(currentChar);
 		currentChar = getNextChar();
 		if (currentChar == '+') {
-			tokenSeq.put(new String("INC"), null);
+			tokenSeq.add(new Token("INC", null));
 			currentChar = getNextChar();
 			return;
 		}
 		else {
-			tokenSeq.put(new String("PLUS"), null);
+			tokenSeq.add(new Token("PLUS", null));
 			return;
 		}
 	}
@@ -281,13 +278,13 @@ public class LexicalAnalysis {
 		currentWord = currentWord + String.valueOf(currentChar);
 		currentChar = getNextChar();
 		if (currentChar == '-') {
-			tokenSeq.put(new String("DEC"), null);
+			tokenSeq.add(new Token("DEC", null));
 			currentChar = getNextChar();
 			currentWord = "";
 			return;
 		}
 		else {
-			tokenSeq.put(new String("MINUS"), null);
+			tokenSeq.add(new Token("MINUS", null));
 			currentWord = "";
 			return;
 		}
@@ -301,7 +298,7 @@ public class LexicalAnalysis {
 		currentWord = currentWord + String.valueOf(currentChar);
 		currentChar = getNextChar();
 		if (currentChar == '=') {
-			tokenSeq.put(new String("NE"), null);
+			tokenSeq.add(new Token("NE", null));
 			currentChar = getNextChar();
 			currentWord = "";
 			return;
@@ -335,7 +332,7 @@ public class LexicalAnalysis {
 			currentChar = getNextChar();
 		}
 		else if ((String.valueOf(currentChar)).matches("[0-9]|([a-z]|[A-Z])")) {
-			tokenSeq.put(new String("DIV"), null);
+			tokenSeq.add(new Token("DIV", null));
 			currentWord = "";
 			return;
 		}
@@ -360,12 +357,12 @@ public class LexicalAnalysis {
 		if (currentChar == '=') {
 			currentWord = currentWord + String.valueOf(currentChar);
 			currentChar = getNextChar();
-			tokenSeq.put(new String("EQ"), null);
+			tokenSeq.add(new Token("EQ", null));
 			currentWord = "";
 			return;
 		}
 		else if ((String.valueOf(currentChar)).matches("^[0-9a-zA-Z_]{1,}$")) {
-			tokenSeq.put(new String("ASS"), null);
+			tokenSeq.add(new Token("ASS", null));
 			currentWord = "";
 			return;
 		}
@@ -390,31 +387,31 @@ public class LexicalAnalysis {
 				minusHandler();
 				break;
 			case '(' :
-				tokenSeq.put(new String("SLP"), null);
+				tokenSeq.add(new Token("SLP", null));
 				currentChar = getNextChar();
 				break;
 			case ')' :
-				tokenSeq.put(new String("SRP"), null);
+				tokenSeq.add(new Token("SRP", null));
 				currentChar = getNextChar();
 				break;
 			case ';' :
-				tokenSeq.put(new String("SEMI"), null);
+				tokenSeq.add(new Token("SEMI", null));
 				currentChar = getNextChar();
 				break;
 			case '{' :
-				tokenSeq.put(new String("LP"), null);
+				tokenSeq.add(new Token("LP", null));
 				currentChar = getNextChar();
 				break;
 			case '}' :
-				tokenSeq.put(new String("RP"), null);
+				tokenSeq.add(new Token("RP", null));
 				currentChar = getNextChar();
 				break;
 			case '*' :
-				tokenSeq.put(new String("MUL"), null);
+				tokenSeq.add(new Token("MUL", null));
 				currentChar = getNextChar();
 				break;
 			case '%' :
-				tokenSeq.put(new String("PERC"), null);
+				tokenSeq.add(new Token("PERC", null));
 				currentChar = getNextChar();
 				break;
 			case '/' :
@@ -458,13 +455,8 @@ public class LexicalAnalysis {
 	 */
 	private static void printResult() {
 		System.out.println("Token Sequence:");
-		Iterator<Entry<String, String>> iter = tokenSeq.entrySet().iterator();
-		while (iter.hasNext()) {
-			@SuppressWarnings("rawtypes")
-			Map.Entry entry = (Map.Entry) iter.next();
-			Object key = entry.getKey();
-			Object value = entry.getValue();
-			System.out.println("<" + key + ", " + value + ">");
+		for (Token token : tokenSeq) {
+			System.out.println(token.toString());
 		}
 		System.out.println();
 		System.out.println("Symbol Table: \n" + symbolTable);
